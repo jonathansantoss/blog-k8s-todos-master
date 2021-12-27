@@ -1,0 +1,4 @@
+spring.redis:
+  host: localhost
+  password: zyCsBc6QXe
+feign.users: http://localhost:8080/users

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.10.RELEASE</version>
+    </parent>
+    <packaging>jar</packaging>
+    <groupId>com.netshoes.blog</groupId>
+    <artifactId>todos</artifactId>
+    <version>1.0</version>
+    <name>Todos</name>
+    <description>
+        A sample spring boot application deployed on Kubernetes
+    </description>
+    <url>https://github.com/netshoes/todos</url>
+    <organization>
+        <name>Netshoes</name>
+        <url>https://www.netshoes.com.br</url>
+    </organization>
+    <developers>
+        <developer>
+            <id>geeks</id>
+            <name>Netshoes Dev Team</name>
+            <email>devs@netshoes.com</email>
+            <organization>Netshoes</organization>
+            <organizationUrl>https://www.netshoes.com.br</organizationUrl>
+        </developer>
+    </developers>
+    <scm>
+        <url>http://github.com/netshoes/todos</url>
+    </scm>
+    <properties>
+        <fabric8.maven.plugin.version>3.5.38</fabric8.maven.plugin.version>
+        <spring.cloud.kubernetes.version>0.2.0.RELEASE</spring.cloud.kubernetes.version>
+        <spring-boot.version>1.5.10.RELEASE</spring-boot.version>
+        <fabric8.helm.chart>todos</fabric8.helm.chart>
+        <swagger.version>2.7.0</swagger.version>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <feign.version>9.7.0</feign.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>default</id>
+            <properties>
+                <deployment.replicas>2</deployment.replicas>
+                <spring.application.name>todos</spring.application.name>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+    </profiles>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes</artifactId>
+            <version>${spring.cloud.kubernetes.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-kubernetes-config</artifactId>
+            <version>${spring.cloud.kubernetes.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.20</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+            <version>${spring-boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>${swagger.version}</version>
+        </dependency>
+
+        <!--feign-->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-httpclient</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-slf4j</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!--skip deploy -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>${maven-deploy-plugin.version}</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>2.2.4</version>
+                <executions>
+                    <execution>
+                        <id>get-the-git-infos</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                        <phase>validate</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
+                <version>${fabric8.maven.plugin.version}</version>
+                <configuration>
+                    <profile>ns</profile>
+                    <verbose>true</verbose>
+                    <images>
+                        <image>
+                            <name>netshoes/${project.artifactId}:%t</name>
+                            <build>
+                                <tags>
+                                    <tag>latest</tag>
+                                    <tag>${git.commit.id.describe}</tag>
+                                </tags>
+                                <dockerFile>Dockerfile</dockerFile>
+                                <assembly>
+                                    <targetDir>/opt/app</targetDir>
+                                    <descriptor>assembly.xml</descriptor>
+                                </assembly>
+                            </build>
+                        </image>
+                    </images>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
